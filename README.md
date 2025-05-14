@@ -6,3 +6,7 @@ b. What does it mean? guest:guest@localhost:5672 , what is the first guest, and 
 is the second guest, and what is localhost:5672 is for?
 
 Pada string koneksi guest:guest@localhost:5672, bagian pertama "guest:guest" menunjukkan username dan password yang digunakan untuk mengautentikasi ke broker AMQP (misalnya RabbitMQ), dalam hal ini username-nya adalah "guest" dan password-nya juga "guest". Bagian "localhost:5672" menunjukkan bahwa koneksi dilakukan ke server RabbitMQ yang berjalan di komputer lokal (localhost) pada port 5672, yang merupakan port default untuk protokol AMQP. Kombinasi ini memungkinkan aplikasi terhubung ke message broker lokal menggunakan kredensial default.
+
+### Simulation slow subscriber
+![Simulation slow subscriber](images/simulation-slow-subscriber.png)
+Berdasarkan chart RabbitMQ di atas, jumlah Queued Messages mencapai angka 20. Hal ini terjadi karena saya menjalankan perintah `cargo run` pada publisher sebanyak 5 kali, di mana setiap eksekusi mengirim 5 pesan sekaligus. Dengan demikian, total ada 25 pesan yang dikirim. Karena subscriber menggunakan `thread::sleep(ten_millis);`, maka proses pengambilan pesan mengalami jeda, sehingga menghasilkan antrian sebanyak (5 - 1) × 5 = 20 pesan yang menumpuk di queue sebelum diproses.
